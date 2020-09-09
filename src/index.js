@@ -13,40 +13,61 @@ function Square(props) {
   )
 }
 
+
 class Board extends React.Component {
   //since state is considered private to the component that defines it, we can't update the board's state directly from the square. So instead we pass a function from the board to the square, and the the square will then call that function when a square is clicked.
-  renderSquare(i) {
-    return  (
-      <Square
-      value={this.props.squares[i]}
-      //pass this function to square, so that square can call it, and in doing so can update board's state.
-      onClick={() => this.props.onClick(i)}
-      />
-    );
-  }
 
-  render() {
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
-    );
-  }
+
+
+// Rewrite Board to use two loops to make the squares instead of hardcoding them.
+renderSquare(i) {
+  console.log('renderSquare')
+  return  (
+    <Square
+    value={this.props.squares[i]}
+    //pass this function to square, so that square can call it, and in doing so can update board's state.
+    onClick={() => this.props.onClick(i)}
+    />
+  );
 }
+
+renderSquares(row) {
+  // array is [0,3,6]
+  let newArray = [];
+
+  for (let i = row; i < row + 3; ++i) {
+    newArray.push(i);
+  }
+  return newArray.map((square) => {
+    return this.renderSquare(square);
+  })
+}
+
+renderRow() {
+  let array = [0,3,6];
+
+  return array.map((row) => {
+    return (
+      <div key = {row} className="board-row">
+        {this.renderSquares(row)}
+      </div>
+    )
+  })
+
+}
+
+
+render() {
+  return (
+    <div>
+      {this.renderRow()}
+    </div>
+  )
+}
+
+}
+
+
 
 class Game extends React.Component {
   constructor (props) {
@@ -87,6 +108,8 @@ class Game extends React.Component {
     });
 
   }
+
+
 
   jumpTo(step) {
     this.setState({
