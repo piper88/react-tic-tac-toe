@@ -17,53 +17,49 @@ function Square(props) {
 class Board extends React.Component {
   //since state is considered private to the component that defines it, we can't update the board's state directly from the square. So instead we pass a function from the board to the square, and the the square will then call that function when a square is clicked.
 
-
-
-// Rewrite Board to use two loops to make the squares instead of hardcoding them.
-renderSquare(i) {
-  console.log('renderSquare')
-  return  (
-    <Square
-    value={this.props.squares[i]}
-    //pass this function to square, so that square can call it, and in doing so can update board's state.
-    onClick={() => this.props.onClick(i)}
-    />
-  );
-}
-
-renderSquares(row) {
-  // array is [0,3,6]
-  let newArray = [];
-
-  for (let i = row; i < row + 3; ++i) {
-    newArray.push(i);
+  renderSquare(i) {
+    return  (
+      <Square
+      key = {i}
+      value={this.props.squares[i]}
+      //pass this function to square, so that square can call it, and in doing so can update board's state.
+      onClick={() => this.props.onClick(i)}
+      />
+    );
   }
-  return newArray.map((square) => {
-    return this.renderSquare(square);
-  })
-}
 
-renderRow() {
-  let array = [0,3,6];
+  renderSquares(row) {
+    let oneRow = [];
 
-  return array.map((row) => {
+    for (let i = row; i < row + 3; ++i) {
+      oneRow.push(i);
+    }
+    return oneRow.map((square) => {
+      return this.renderSquare(square);
+    })
+  }
+
+  renderRow() {
+    let firstElementInRows = [0,3,6];
+
+    return firstElementInRows.map((row) => {
+      return (
+        <div key={row} className="board-row">
+          {this.renderSquares(row)}
+        </div>
+      )
+    })
+
+  }
+
+
+  render() {
     return (
-      <div key = {row} className="board-row">
-        {this.renderSquares(row)}
+      <div>
+        {this.renderRow()}
       </div>
     )
-  })
-
-}
-
-
-render() {
-  return (
-    <div>
-      {this.renderRow()}
-    </div>
-  )
-}
+  }
 
 }
 
