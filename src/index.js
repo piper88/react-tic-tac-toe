@@ -2,12 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+
+//X aquamarine
+//O cyan or cerulean
 //when is everything re-rendered? when there's a change in state?
 
 //Since Square doesn't have it's own state, can rewrite it as the following:
 function Square(props) {
   return (
-    <button className="square" onClick={props.onClick}>
+    <button className={props.value || "square"} onClick={props.onClick}>
       {props.value}
       </button>
   )
@@ -19,12 +22,15 @@ class Board extends React.Component {
 
   renderSquare(i) {
     return  (
+
       <Square
       key = {i}
       value={this.props.squares[i]}
+      className={this.props.squares[i]}
       //pass this function to square, so that square can call it, and in doing so can update board's state.
       onClick={() => this.props.onClick(i)}
       />
+
     );
   }
 
@@ -118,6 +124,7 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
+    const xIsNext = this.state.xIsNext;
 
 //map accepts as arguments to callback 1.) element currently being processed 2.) index of that element
     const moves = history.map((step, move) => {
@@ -188,6 +195,7 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <Board
+          xIsNext = {xIsNext}
           squares = {current.squares}
           //passes the handleClick function to board as a prop called onClick. board will then pass this along to square, so that when user clicks on square, the function is called
           onClick = {(i) => this.handleClick(i)}
