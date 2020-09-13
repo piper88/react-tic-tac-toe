@@ -2,11 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-
-//X aquamarine
-//O cyan or cerulean
-//when is everything re-rendered? when there's a change in state?
-
 //Since Square doesn't have it's own state, can rewrite it as the following:
 function Square(props) {
   return (
@@ -15,7 +10,6 @@ function Square(props) {
       </button>
   )
 }
-
 
 class Board extends React.Component {
   //since state is considered private to the component that defines it, we can't update the board's state directly from the square. So instead we pass a function from the board to the square, and the the square will then call that function when a square is clicked.
@@ -53,7 +47,6 @@ class Board extends React.Component {
         </div>
       )
     })
-
   }
 
 
@@ -64,7 +57,6 @@ class Board extends React.Component {
       </div>
     )
   }
-
 }
 
 
@@ -124,6 +116,42 @@ handleMoveOrder() {
     })
   }
 
+  displayRowAndColumn(step) {
+    let thingClicked = step.squareClicked;
+
+    //location = [row, column]
+    let location = []
+    //assign row
+    switch (true) {
+      case (thingClicked === null):
+        location[0] = 'none';
+        break;
+      case (thingClicked < 3 && thingClicked >= 0):
+        location[0] = 1;
+        break;
+      case (thingClicked >= 3 && thingClicked < 6):
+        location[0] = 2;
+        break;
+      default:
+        location[0] = 3;
+    }
+    //assign column
+    switch (true) {
+      case (thingClicked === null):
+        location[1] = 'none';
+        break;
+      case (thingClicked % 3 === 0):
+        location[1] = 1;
+        break;
+      case (thingClicked === 1 || thingClicked === 4 || thingClicked === 7):
+        location[1] = 2;
+        break;
+      default:
+        location[1] = 3;
+    }
+    return location;
+  }
+
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -131,43 +159,12 @@ handleMoveOrder() {
     const xIsNext = this.state.xIsNext;
 
 //map accepts as arguments to callback 1.) element currently being processed 2.) index of that element
-
-
-
   const movesForward = history.map((step, move) => {
 
+    let row = this.displayRowAndColumn(step)[0];
+    let column = this.displayRowAndColumn(step)[1];
+
     //when history.length - 1 === move, make desc bold
-    let thingClicked = step.squareClicked;
-    let row;
-    let column;
-    //assign row
-    switch (true) {
-      case (thingClicked === null):
-        row = 'none';
-        break;
-      case (thingClicked < 3 && thingClicked >= 0):
-        row = 1;
-        break;
-      case (thingClicked >= 3 && thingClicked < 6):
-        row = 2;
-        break;
-      default:
-        row = 3;
-    }
-    //assign column
-    switch (true) {
-      case (thingClicked === null):
-        column = 'none';
-        break;
-      case (thingClicked % 3 === 0):
-        column = 1;
-        break;
-      case (thingClicked === 1 || thingClicked === 4 || thingClicked === 7):
-        column = 2;
-        break;
-      default:
-        column = 3;
-    }
     let style;
     if (history.length - 1 === move) {
       style = "bold";
@@ -176,7 +173,6 @@ handleMoveOrder() {
     const desc = move ?
     `Go to move # ${move}` :
     'Go to game start';
-
 
         return (
           //assign a key property to items in dynamically created lists. This allows for react to keep track of which items have changed etc. between renderings
@@ -192,38 +188,10 @@ handleMoveOrder() {
 
     const movesInReverse = reverseHistory.map((step, move) => {
 
+      let row = this.displayRowAndColumn(step)[0];
+      let column = this.displayRowAndColumn(step)[1];
+
       //when history.length - 1 === move, make desc bold
-      let thingClicked = step.squareClicked;
-      let row;
-      let column;
-      //assign row
-      switch (true) {
-        case (thingClicked === null):
-          row = 'none';
-          break;
-        case (thingClicked < 3 && thingClicked >= 0):
-          row = 1;
-          break;
-        case (thingClicked >= 3 && thingClicked < 6):
-          row = 2;
-          break;
-        default:
-          row = 3;
-      }
-      //assign column
-      switch (true) {
-        case (thingClicked === null):
-          column = 'none';
-          break;
-        case (thingClicked % 3 === 0):
-          column = 1;
-          break;
-        case (thingClicked === 1 || thingClicked === 4 || thingClicked === 7):
-          column = 2;
-          break;
-        default:
-          column = 3;
-      }
       let style;
       if (history.length - 1 === move) {
         style = "bold";
