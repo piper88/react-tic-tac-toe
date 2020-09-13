@@ -22,7 +22,6 @@ class Board extends React.Component {
 
   renderSquare(i) {
     return  (
-
       <Square
       key = {i}
       value={this.props.squares[i]}
@@ -30,7 +29,6 @@ class Board extends React.Component {
       //pass this function to square, so that square can call it, and in doing so can update board's state.
       onClick={() => this.props.onClick(i)}
       />
-
     );
   }
 
@@ -82,12 +80,20 @@ class Game extends React.Component {
       }],
       stepNumber: 0,
       xIsNext: true,
+      ascending: true,
     };
   }
 
+handleMoveOrder() {
+  this.setState({
+    ascending: !this.state.ascending,
+  })
+}
+
   handleClick(i) {
+    //creates copy of history from first move, to but not including the current move
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    const current = history[history.length - 1];
+    const current = history[this.state.stepNumber];
 
     //creates copy of original squares array
     const squares = current.squares.slice();
@@ -111,8 +117,6 @@ class Game extends React.Component {
 
   }
 
-
-
   jumpTo(step) {
     this.setState({
       stepNumber: step,
@@ -127,13 +131,71 @@ class Game extends React.Component {
     const xIsNext = this.state.xIsNext;
 
 //map accepts as arguments to callback 1.) element currently being processed 2.) index of that element
-    const moves = history.map((step, move) => {
-      //when history.length - 1 === move, make desc bold
 
+
+
+  const movesForward = history.map((step, move) => {
+
+    //when history.length - 1 === move, make desc bold
+    let thingClicked = step.squareClicked;
+    let row;
+    let column;
+    //assign row
+    switch (true) {
+      case (thingClicked === null):
+        row = 'none';
+        break;
+      case (thingClicked < 3 && thingClicked >= 0):
+        row = 1;
+        break;
+      case (thingClicked >= 3 && thingClicked < 6):
+        row = 2;
+        break;
+      default:
+        row = 3;
+    }
+    //assign column
+    switch (true) {
+      case (thingClicked === null):
+        column = 'none';
+        break;
+      case (thingClicked % 3 === 0):
+        column = 1;
+        break;
+      case (thingClicked === 1 || thingClicked === 4 || thingClicked === 7):
+        column = 2;
+        break;
+      default:
+        column = 3;
+    }
+    let style;
+    if (history.length - 1 === move) {
+      style = "bold";
+    }
+
+    const desc = move ?
+    `Go to move # ${move}` :
+    'Go to game start';
+
+
+        return (
+          //assign a key property to items in dynamically created lists. This allows for react to keep track of which items have changed etc. between renderings
+          // Display the location for each move in the format (col, row) in the move history list.
+          <li key = {move}>
+          <button className = {style} onClick = {() => this.jumpTo(move)}>{desc}</button>
+          {`Row: ${row} Column: ${column}`}
+          </li>
+        )
+  })
+
+    const reverseHistory = history.slice().reverse();
+
+    const movesInReverse = reverseHistory.map((step, move) => {
+
+      //when history.length - 1 === move, make desc bold
       let thingClicked = step.squareClicked;
       let row;
       let column;
-
       //assign row
       switch (true) {
         case (thingClicked === null):
@@ -148,7 +210,6 @@ class Game extends React.Component {
         default:
           row = 3;
       }
-
       //assign column
       switch (true) {
         case (thingClicked === null):
@@ -163,27 +224,21 @@ class Game extends React.Component {
         default:
           column = 3;
       }
-
       let style;
       if (history.length - 1 === move) {
         style = "bold";
       }
 
-      const desc = move ?
-      `Go to move # ${move}` :
-      'Go to game start';
-
-          return (
-            //assign a key property to items in dynamically created lists. This allows for react to keep track of which items have changed etc. between renderings
-            // Display the location for each move in the format (col, row) in the move history list.
-            <li key = {move}>
-            <button className = {style} onClick = {() => this.jumpTo(move)}>{desc}</button>
-            {`Row: ${row} Column: ${column}`}
-            </li>
-          )
-    })
-
-
+      const desc = reverseHistory.length - move - 1 ?
+      `Go to move # ${reverseHistory.length - move - 1}` :
+      `Go to game start`;
+        return (
+          <li key = {move}>
+            <button className = {style} onClick = {() => this.jumpTo(reverseHistory.length - move - 1)}>{desc}</button>
+              {`Row: ${row} Column: ${column}`}
+          </li>
+        )
+    });
 
     let status;
     if (winner) {
@@ -202,8 +257,9 @@ class Game extends React.Component {
           />
         </div>
         <div className="game-info">
+          <button onClick={() => this.handleMoveOrder()}>{this.state.ascending ? `Ascending` : `Descending`}</button>
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <ul>{this.state.ascending ? movesForward : movesInReverse}</ul>
         </div>
       </div>
     );
