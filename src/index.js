@@ -2,19 +2,40 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-//Since Square doesn't have it's own state, can rewrite it as the following:
-function Square(props) {
-  return (
-    <button className={props.value || "square"} onClick={props.onClick}>
-      {props.value}
-      </button>
-  )
+class Square extends React.Component {
+
+  render () {
+    return (
+      <button className={this.props.winningSquare ? 'winningSquare' : 'square'} onClick={this.props.onClick}>
+        {this.props.value}
+        </button>
+    )
+  }
 }
 
 class Board extends React.Component {
   //since state is considered private to the component that defines it, we can't update the board's state directly from the square. So instead we pass a function from the board to the square, and the the square will then call that function when a square is clicked.
 
+  //this.props.winningPlacement is array of winning squares e.g. [0,1,2]
+
   renderSquare(i) {
+    console.log(this.props.squares[i]);
+    if (this.props.winningPlacement) {
+      //if there is a winner, return a Square with a winningSquare attribute for each time i === this.props.winninPlacement[0, 1, 2]
+      //otherwise return a Square with no winningSquare attribute
+        return  (
+          <Square
+          key = {i}
+          value={this.props.squares[i]}
+
+          winningSquare = {i === this.props.winningPlacement[0] || i === this.props.winningPlacement[1] || i === this.props.winningPlacement[2] ? true : null}
+          className={this.props.squares[i]}
+          //pass this function to square, so that square can call it, and in doing so can update board's state.
+          onClick={() => this.props.onClick(i)}
+          />
+        );
+      }
+    //if no winner is declared
     return  (
       <Square
       key = {i}
@@ -155,6 +176,7 @@ handleMoveOrder() {
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
+    //now winner is [[placement of winning symbols], winning symbol]
     const winner = calculateWinner(current.squares);
     const xIsNext = this.state.xIsNext;
 
@@ -210,7 +232,7 @@ handleMoveOrder() {
 
     let status;
     if (winner) {
-      status = `Winner: ${winner}`;
+      status = `Winner: ${winner[1]}`;
     } else {
       status = 'Next player: ' + (this.state.xIsNext ?  'X' : 'O')
     }
@@ -218,6 +240,7 @@ handleMoveOrder() {
       <div className="game">
         <div className="game-board">
           <Board
+          winningPlacement = {winner ? winner[0] : null}
           xIsNext = {xIsNext}
           squares = {current.squares}
           //passes the handleClick function to board as a prop called onClick. board will then pass this along to square, so that when user clicks on square, the function is called
@@ -234,6 +257,8 @@ handleMoveOrder() {
   }
 }
 
+//squares is the array of length 9
+// [X, X, X, null, null, null...]
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
@@ -246,9 +271,14 @@ function calculateWinner(squares) {
     [2, 4, 6],
   ];
   for (let i = 0; i < lines.length; i++) {
+    //const [a,b,c] = [0,1,2]
     const [a, b, c] = lines[i];
+    const result = [];
+    //if the symbol that's at the first place is the same as the symbol in the second and third place, then that symbol is the winner;
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      result.push([a,b,c], squares[a])
+      return result;
+      // return squares[a];
     }
   }
   return null;
