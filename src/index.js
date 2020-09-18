@@ -25,7 +25,6 @@ class Board extends React.Component {
   }
   //this.props.winningPlacement is array of winning squares e.g. [0,1,2]
   renderSquare(i) {
-    console.log(this.props.squares[i]);
     if (this.props.winningPlacement) {
       //if there is a winner, return a Square with a winningSquare attribute for each time i === this.props.winninPlacement[0, 1, 2]
       //otherwise return a Square with no winningSquare attribute
@@ -88,6 +87,10 @@ class Board extends React.Component {
 
 
 class Game extends React.Component {
+  //if !calculateWinner(squares) && stepNumber === 0
+    //set description to 'No winner'
+
+
   constructor (props) {
     super(props);
     //to collect data from multiple children (squares), declare the shared state in the parent
@@ -109,6 +112,7 @@ handleMoveOrder() {
 }
 
   handleClick(i) {
+    console.log(this.state.stepNumber)
     //creates copy of history from first move, to but not including the current move
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[this.state.stepNumber];
@@ -238,7 +242,12 @@ handleMoveOrder() {
     let status;
     if (winner) {
       status = `Winner: ${winner[1]}`;
-    } else {
+    }
+    //declare a draw
+    else if (!winner && this.state.stepNumber === 9) {
+      status = `YOU BOTH LOSE`
+    }
+    else {
       status = 'Next player: ' + (this.state.xIsNext ?  'X' : 'O')
     }
     return (
