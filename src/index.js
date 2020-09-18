@@ -6,7 +6,7 @@ class Square extends React.Component {
 
   render () {
     return (
-      <button className={this.props.winningSquare ? 'winningSquare' : 'square'} onClick={this.props.onClick}>
+      <button className={this.props.className} onClick={this.props.onClick}>
         {this.props.value}
         </button>
     )
@@ -17,7 +17,6 @@ class Board extends React.Component {
   //since state is considered private to the component that defines it, we can't update the board's state directly from the square. So instead we pass a function from the board to the square, and the the square will then call that function when a square is clicked.
 
   //this.props.winningPlacement is array of winning squares e.g. [0,1,2]
-
   renderSquare(i) {
     console.log(this.props.squares[i]);
     if (this.props.winningPlacement) {
@@ -27,9 +26,7 @@ class Board extends React.Component {
           <Square
           key = {i}
           value={this.props.squares[i]}
-
-          winningSquare = {i === this.props.winningPlacement[0] || i === this.props.winningPlacement[1] || i === this.props.winningPlacement[2] ? true : null}
-          className={this.props.squares[i]}
+          className={i === this.props.winningPlacement[0] || i === this.props.winningPlacement[1] || i === this.props.winningPlacement[2] ? 'winningSquare' : this.props.squares[i] || 'square'}
           //pass this function to square, so that square can call it, and in doing so can update board's state.
           onClick={() => this.props.onClick(i)}
           />
@@ -40,7 +37,7 @@ class Board extends React.Component {
       <Square
       key = {i}
       value={this.props.squares[i]}
-      className={this.props.squares[i]}
+      className={this.props.squares[i] ? this.props.squares[i] : 'square'}
       //pass this function to square, so that square can call it, and in doing so can update board's state.
       onClick={() => this.props.onClick(i)}
       />
