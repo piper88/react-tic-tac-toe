@@ -11,6 +11,10 @@ button:hover {
   background: pink;
 }
 
+.noHover {
+  pointer-events: none;
+}
+
 .bold {
   font-weight: bold;
 }
