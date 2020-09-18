@@ -11,6 +11,10 @@ button:hover {
   background: pink;
 }
 
+.noHover {
+  pointer-events: none;
+}
+
 .bold {
   font-weight: bold;
 }
@@ -23,6 +27,37 @@ button:hover {
 
 .status {
   margin-bottom: 10px;
+}
+.X {
+  color: aquamarine;
+  background: black;
+  border: 1px solid #999;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 34px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 34px;
+}
+
+.O {
+  color: cyan;
+  background: black;
+  border: 1px solid #999;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 34px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 34px;
 }
 
 .square {
@@ -55,42 +90,6 @@ button:hover {
   width: 34px;
 }
 
-
-.X {
-  color: aquamarine;
-  background: black;
-  border: 1px solid #999;
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 34px;
-}
-
-.X:active {
-  background: pink;
-}
-
-.O {
-  color: cyan;
-  background: black;
-  border: 1px solid #999;
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 34px;
-}
 
 .square:focus {
   outline: none;
