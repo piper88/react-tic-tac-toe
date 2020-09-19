@@ -7,7 +7,8 @@ ol, ul {
   padding-left: 30px;
 }
 
-button:hover {
+/*putting hover effect over button made the hover effect remain until cursor was removed. Putting it on square made the hover effect go away as soon as the button was clicked. Maybe because even after you click on one, it's still a button, so hover effect remains. But once you click on one it ceases to be a square. So hover effect is removed immediately? vielleicht*/
+.square:hover {
   background: pink;
 }
 

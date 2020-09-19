@@ -21,6 +21,7 @@ class Board extends React.Component {
   //since state is considered private to the component that defines it, we can't update the board's state directly from the square. So instead we pass a function from the board to the square, and the the square will then call that function when a square is clicked.
 
   classList(i) {
+    console.log('classList');
     return `${this.props.squares[i]} noHover`
   }
   //this.props.winningPlacement is array of winning squares e.g. [0,1,2]
@@ -74,7 +75,6 @@ class Board extends React.Component {
     })
   }
 
-
   render() {
     return (
       <div>
@@ -112,7 +112,7 @@ handleMoveOrder() {
 }
 
   handleClick(i) {
-    console.log(this.state.stepNumber)
+    console.log('handleClick')
     //creates copy of history from first move, to but not including the current move
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[this.state.stepNumber];
